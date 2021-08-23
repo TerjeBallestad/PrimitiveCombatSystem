@@ -3,6 +3,9 @@
 
 #include "ACSCharacter.h"
 
+#include "ACSGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AACSCharacter::AACSCharacter()
 {
@@ -15,7 +18,14 @@ AACSCharacter::AACSCharacter()
 void AACSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const auto GameMode = CastChecked<AACSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 	
+	CharacterData = *GameMode->CharacterData->FindRow<FCharacterData>(FName(Name), "");
+	for (auto SpellName : CharacterData.Spells)
+	{
+		Spells.Add(* GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), ""));
+	}
 }
 
 // Called every frame
@@ -25,10 +35,9 @@ void AACSCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void AACSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AACSCharacter::ShootSpell()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
+	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
+	NewSpell->Setup(Spells[0]);
+}	
 

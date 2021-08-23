@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+#include "Components/BillboardComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "Spell.generated.h"
@@ -14,7 +15,7 @@ struct FSpellData : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TAssetPtr<UTexture2D> Image;
+	UTexture2D *Image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Light;
@@ -42,15 +43,27 @@ public:
 	// Sets default values for this actor's properties
 	ASpell();
 
+	UFUNCTION()
+	void Setup(FSpellData data);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USphereComponent * Collider;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Speed = 1;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UPROPERTY()
-	UTexture2D *Icon;
+	UBillboardComponent *BillboardComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	FSpellData SpellData;	
 };

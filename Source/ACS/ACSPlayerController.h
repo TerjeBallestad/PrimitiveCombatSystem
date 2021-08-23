@@ -13,5 +13,14 @@ UCLASS()
 class ACS_API AACSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+	void BeginPlay() override;
+
+public:
+	UFUNCTION()
+	virtual void SetupInputComponent() override;
+
+	UFUNCTION()
+	void ShootSpell();
+	void MouseLeftClicked();
 };
