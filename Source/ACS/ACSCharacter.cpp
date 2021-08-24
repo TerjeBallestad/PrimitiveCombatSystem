@@ -3,6 +3,7 @@
 
 #include "ACSCharacter.h"
 
+#include "ACSDamage.h"
 #include "ACSGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -38,6 +39,21 @@ void AACSCharacter::Tick(float DeltaTime)
 void AACSCharacter::ShootSpell()
 {
 	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
-	NewSpell->Setup(Spells[0]);
-}	
+	NewSpell->Setup(this, Spells[0]);
+}
+
+float AACSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	DamageCauser->Destroy();
+	
+	/*auto dmg = Cast<UACSDamage>(DamageEvent.DamageTypeClass->GetDefaultObject());
+
+	if (!dmg) return 0.0f;
+
+	*/
+	return 0.0f;
+}
+
+
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "BTVector.h"
 #include "Spell.h"
 #include "GameFramework/Character.h"
 #include "ACSCharacter.generated.h"
@@ -15,6 +16,9 @@ struct FCharacterData: public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FString> Spells;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FBTVector BaseType;
 	
 };
 
@@ -51,4 +55,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpell> SpellClass;
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

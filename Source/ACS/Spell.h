@@ -44,7 +44,7 @@ public:
 	ASpell();
 
 	UFUNCTION()
-	void Setup(FSpellData data);
+	void Setup(AActor* actor, FSpellData data);
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,9 +53,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USphereComponent * Collider;
 
+	UPROPERTY()
+	AActor *SpellInstigator;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Speed = 1;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 public:	
 	// Called every frame
