@@ -95,6 +95,5 @@ void ASpell::NotifyActorBeginOverlap(AActor* OtherActor)
 void ASpell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	AddActorLocalOffset(FVector::ForwardVector * Speed * DeltaTime);
 }

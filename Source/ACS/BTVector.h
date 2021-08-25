@@ -8,68 +8,88 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EBaseType : uint8
+{
+	N	UMETA(DisplayName = "None"),
+	L	UMETA(DisplayName = "Light"),
+	B	UMETA(DisplayName = "Blue"),
+	D	UMETA(DisplayName = "Dark"),
+	R	UMETA(DisplayName = "Red"),
+	G   UMETA(DisplayName = "Green"),
+	A	UMETA(DisplayName = "All"),
+};
+
 USTRUCT(BlueprintType)
 struct FBTVector
 {
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float l;
+	float L;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float b;
+	float B;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float d;
+	float D;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float r;
+	float R;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float g;
+	float G;
 
-	FORCEINLINE FBTVector(){};
+	FORCEINLINE FBTVector()
+	{
+		L = 0;
+		B = 0;
+		D = 0;
+		R = 0;
+		G = 0;
+	};
 
 	FORCEINLINE FBTVector(float InL, float InB, float InD, float InR, float InG) {
-		l = InL;
-		b = InB;
-		d = InD;
-		r = InR;
-		g = InG;
+		L = InL;
+		B = InB;
+		D = InD;
+		R = InR;
+		G = InG;
 	}
 
 	FORCEINLINE FBTVector operator*(FBTVector vector) {
 		return FBTVector(
-			l*vector.l,
-			d*vector.d,
-			b*vector.b,
-			r*vector.r,
-			g*vector.g
+			L*vector.L,
+			D*vector.D,
+			B*vector.B,
+			R*vector.R,
+			G*vector.G
 		);
 	}
 
 	FORCEINLINE FBTVector operator-(FBTVector vector) {
 		return FBTVector(
-			l-vector.l,
-			d-vector.d,
-			b-vector.b,
-			r-vector.r,
-			g-vector.g
+			L-vector.L,
+			D-vector.D,
+			B-vector.B,
+			R-vector.R,
+			G-vector.G
 		);
 	}
 
 	FORCEINLINE FBTVector operator+=(FBTVector vector) {
 		return FBTVector(
-			l+=vector.l,
-			d+=vector.d,
-			b+=vector.b,
-			r+=vector.r,
-			g+=vector.g
+			L+=vector.L,
+			D+=vector.D,
+			B+=vector.B,
+			R+=vector.R,
+			G+=vector.G
 		);
 	}
 
 
 	FORCEINLINE bool IsAnyBelowZero() {
-		return l<= 0.0 || d<= 0.0 || b <= 0.0 || r<=0.0 || g <= 0.0;
+		return L<= 0.0 || D<= 0.0 || B <= 0.0 || R<=0.0 || G <= 0.0;
 	}
 
 	FORCEINLINE float Sum() {
-		return l + b + d + r + g;
+		return L + B + D + R + G;
 	}
 };
