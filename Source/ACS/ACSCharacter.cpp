@@ -50,9 +50,17 @@ void AACSCharacter::ShootSpell(FSpellData SpellData)
 }
 
 float AACSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                                AActor* DamageCauser)
 {
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	DamageCauser->Destroy();
+
+	if(!InCombat)
+	{
+		EnteringCombat(EventInstigator->GetCharacter());
+		InCombat = true;
+	}
+	
 	
 	/*auto dmg = Cast<UACSDamage>(DamageEvent.DamageTypeClass->GetDefaultObject());
 

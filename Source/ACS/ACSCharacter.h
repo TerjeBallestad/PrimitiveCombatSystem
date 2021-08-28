@@ -39,6 +39,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UACSTalentGridComponent *TalentGridComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool InCombat = false;
+
 	//Stats
 	UPROPERTY(VisibleAnywhere)
 	float Endurance; // Light, health
@@ -90,6 +93,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpell> SpellClass;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnteringCombat(AActor *Enemy);
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };
