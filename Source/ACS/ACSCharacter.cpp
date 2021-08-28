@@ -38,10 +38,15 @@ void AACSCharacter::Tick(float DeltaTime)
 
 }
 
-void AACSCharacter::ShootSpell()
+void AACSCharacter::CastSpell_Implementation(int32 SpellIndex)
+{
+	
+}
+
+void AACSCharacter::ShootSpell(FSpellData SpellData)
 {
 	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
-	NewSpell->Setup(this, Spells[0]);
+	NewSpell->Setup(this, SpellData);
 }
 
 float AACSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

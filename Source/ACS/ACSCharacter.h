@@ -38,6 +38,35 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UACSTalentGridComponent *TalentGridComponent;
+
+	//Stats
+	UPROPERTY(VisibleAnywhere)
+	float Endurance; // Light, health
+	
+	UPROPERTY(VisibleAnywhere)
+	float Intellect; // Blue, critical chance
+
+	UPROPERTY(VisibleAnywhere)
+	float Power; // Dark, damage
+
+	UPROPERTY(VisibleAnywhere)
+	float Wit; // Red, cast speed
+
+	UPROPERTY(VisibleAnywhere)
+	float Haste; // Red, projectile speed
+
+	UPROPERTY(VisibleAnywhere)
+	float Wisdom; // Green, spell cost reduction
+
+	UPROPERTY(VisibleAnywhere)
+	float Acceptance; // Green, armor
+
+	UPROPERTY(VisibleAnywhere)
+	float Accuracy; // Green/Blue, hit chance
+
+	UPROPERTY(VisibleAnywhere)
+	float Creativity; // Red/Blue, energy generation
+
 	
 
 public:	
@@ -47,14 +76,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FCharacterData CharacterData;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FSpellData> Spells;
 
-	UFUNCTION()
-	void ShootSpell();
+	UFUNCTION(BlueprintNativeEvent)
+	void CastSpell(int32 SpellIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void ShootSpell(FSpellData SpellData);
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpell> SpellClass;

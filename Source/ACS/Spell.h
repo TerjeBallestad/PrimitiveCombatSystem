@@ -17,6 +17,9 @@ struct FSpellData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D *Image;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	float CastTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Light;
 

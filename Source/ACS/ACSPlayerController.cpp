@@ -19,18 +19,22 @@ void AACSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	
-	InputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AACSPlayerController::ShootSpell);
+	InputComponent->BindAction<FActionBarInput>("Action1", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 0);
+	InputComponent->BindAction<FActionBarInput>("Action2", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 1);
+	InputComponent->BindAction<FActionBarInput>("Action3", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 2);
+	InputComponent->BindAction<FActionBarInput>("Action4", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 3);
+	InputComponent->BindAction<FActionBarInput>("Action5", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 4);
 	InputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &AACSPlayerController::MouseLeftClicked);
 	
 }
 
-void AACSPlayerController::ShootSpell()
+void AACSPlayerController::CastSpell(int32 Index)
 {
 	auto pawn = Cast<AACSCharacter>(GetPawn());
 	if(pawn)
 	{
-		UE_LOG(LogTemp,Warning, TEXT("Spell"));
-		pawn->ShootSpell();
+		UE_LOG(LogTemp,Warning, TEXT("Spell input index %d"), Index);
+		pawn->CastSpell(Index);
 	}
 }
 

@@ -22,6 +22,9 @@ struct FTalentData : public FTableRowBase
 	UTexture2D *Image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Rank;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EBaseType North;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -43,5 +46,4 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FTalentData Data;
 	
-
 };

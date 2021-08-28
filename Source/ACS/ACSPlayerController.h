@@ -9,6 +9,8 @@
 /**
  * 
  */
+DECLARE_DELEGATE_OneParam(FActionBarInput, const int32);
+
 UCLASS()
 class ACS_API AACSPlayerController : public APlayerController
 {
@@ -21,6 +23,6 @@ public:
 	virtual void SetupInputComponent() override;
 
 	UFUNCTION()
-	void ShootSpell();
+	void CastSpell(int32 Index);
 	void MouseLeftClicked();
 };
