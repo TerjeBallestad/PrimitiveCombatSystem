@@ -4,6 +4,8 @@
 #include "Spell.h"
 
 #include "ACSDamage.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 
 
 // TODO Rename to projectile spell
@@ -61,6 +63,7 @@ void ASpell::NotifyActorBeginOverlap(AActor* OtherActor)
 
 
 		const FDamageEvent dmg(DamageTypeClass);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorLocation(), GetActorRotation(), true);
 		
 		if(SpellData.Light > 0)
 		{

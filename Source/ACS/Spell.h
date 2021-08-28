@@ -65,6 +65,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Speed = 1;
 
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem *ImpactParticles;
+
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 public:	
