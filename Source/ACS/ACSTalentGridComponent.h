@@ -8,8 +8,29 @@
 #include "Components/ActorComponent.h"
 #include "ACSTalentGridComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FTalentGridCell
+{
+	GENERATED_BODY()
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString SlotName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString TalentName;
+};
+
+USTRUCT(BlueprintType)
+struct FTalentGridCharacter : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FIntPoint, FTalentGridCell> Grid;
+};
+
+
+UCLASS( ClassGroup=(ACS), meta=(BlueprintSpawnableComponent) )
 class ACS_API UACSTalentGridComponent : public UActorComponent
 {
 	GENERATED_BODY()

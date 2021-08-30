@@ -22,13 +22,16 @@ void AACSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const auto GameMode = CastChecked<AACSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	GameMode = CastChecked<AACSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 	
 	CharacterData = *GameMode->CharacterData->FindRow<FCharacterData>(FName(Name), "");
-	for (auto SpellName : CharacterData.Spells)
+	for (const auto SpellName : CharacterData.Spells)
 	{
-		Spells.Add(* GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), ""));
+		LearnSpell(SpellName);
 	}
+
+	SetMaxHealth(200);
+	SetCurrentHealth(200);
 }
 
 // Called every frame
@@ -38,36 +41,89 @@ void AACSCharacter::Tick(float DeltaTime)
 
 }
 
+void AACSCharacter::SetCurrentHealth(const float NewAmount)
+{
+	CurrentHealth = NewAmount;
+	CurrentHealth = FMath::Clamp<float>(CurrentHealth, 0.0, MaxHealth);
+	UpdateHealthBar();
+}
+
+void AACSCharacter::AddCurrentHealth(const float Amount)
+{
+	CurrentHealth += Amount;
+	CurrentHealth = FMath::Clamp<float>(CurrentHealth, 0.0, MaxHealth);
+	UpdateHealthBar();
+}
+
+float AACSCharacter::GetCurrentHealth() const
+{
+	return CurrentHealth;
+}
+
+void AACSCharacter::SetMaxHealth(const float NewAmount)
+{
+	MaxHealth = NewAmount;
+	UpdateHealthBar();
+}
+
+float AACSCharacter::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
 void AACSCharacter::CastSpell_Implementation(int32 SpellIndex)
 {
 	
 }
 
-void AACSCharacter::ShootSpell(FSpellData SpellData)
+void AACSCharacter::LearnSpell(FString SpellName)
+{
+	Spells.Add(* GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), ""));
+	if(!CharacterData.Spells.Contains(SpellName))
+	{
+		CharacterData.Spells.Add(SpellName);	
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName);
+}
+
+void AACSCharacter::ShootSpell(const FString SpellName, const FSpellData SpellData)
 {
 	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
+	NewSpell->SetSpellName(SpellName);
 	NewSpell->Setup(this, SpellData);
 }
 
-float AACSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+void AACSCharacter::EnteringCombat_Implementation(AActor* Enemy)
+{
+	InCombat = true;
+}
+
+float AACSCharacter::TakeDamage_Implementation(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                 AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	ASpell *Spell = Cast<ASpell>(DamageCauser);
+	if(IsValid(Spell) && !CharacterData.Spells.Contains(Spell->GetSpellName()))
+	{
+		LearnSpell(Spell->GetSpellName());
+		UE_LOG(LogTemp, Warning, TEXT("New spell: %s"), *Spell->GetSpellName());
+	}
 	DamageCauser->Destroy();
 
 	if(!InCombat)
 	{
-		EnteringCombat(EventInstigator->GetCharacter());
-		InCombat = true;
-	}
+		AACSCharacter * EnemyCharacter = Cast<AACSCharacter>(EventInstigator->GetCharacter());
+		EnteringCombat(EnemyCharacter);
+		EnemyCharacter->EnteringCombat(this);
+	}	
 	
-	
+	AddCurrentHealth(-DamageAmount * 10);
 	/*auto dmg = Cast<UACSDamage>(DamageEvent.DamageTypeClass->GetDefaultObject());
 
 	if (!dmg) return 0.0f;
 
 	*/
-	return 0.0f;
+	return DamageAmount * 10;
 }
 
 

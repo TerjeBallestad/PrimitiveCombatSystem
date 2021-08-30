@@ -13,7 +13,7 @@
  * 
  */
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTalentData : public FTableRowBase
 {
 	GENERATED_BODY()

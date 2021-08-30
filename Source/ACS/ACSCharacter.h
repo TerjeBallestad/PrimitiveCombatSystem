@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "ACSGameModeBase.h"
 #include "ACSTalentGridComponent.h"
 #include "BTVector.h"
 #include "Spell.h"
@@ -42,39 +43,66 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool InCombat = false;
 
+	UPROPERTY()
+	AACSGameModeBase * GameMode;
+
 	//Stats
 	UPROPERTY(VisibleAnywhere)
-	float Endurance; // Light, health
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere)
+	float CurrentHealth;
 	
 	UPROPERTY(VisibleAnywhere)
-	float Intellect; // Blue, critical chance
+	float Endurance; // Light, +health
+	
+	UPROPERTY(VisibleAnywhere)
+	float Intellect; // Blue, +critical chance
 
 	UPROPERTY(VisibleAnywhere)
-	float Power; // Dark, damage
+	float Power; // Dark, +damage
 
 	UPROPERTY(VisibleAnywhere)
-	float Wit; // Red, cast speed
+	float Wit; // Red, +cast speed
 
 	UPROPERTY(VisibleAnywhere)
-	float Haste; // Red, projectile speed
+	float Haste; // Red, +projectile speed
 
 	UPROPERTY(VisibleAnywhere)
-	float Wisdom; // Green, spell cost reduction
+	float Wisdom; // Green, -spell cost
 
 	UPROPERTY(VisibleAnywhere)
-	float Acceptance; // Green, armor
+	float Harmony; // Green, +armor
 
 	UPROPERTY(VisibleAnywhere)
-	float Accuracy; // Green/Blue, hit chance
+	float Accuracy; // Green/Blue, +hit chance
 
 	UPROPERTY(VisibleAnywhere)
-	float Creativity; // Red/Blue, energy generation
+	float Creativity; // Red/Blue, +energy generation
 
 	
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentHealth(float NewAmount);
+
+	UFUNCTION(BlueprintCallable)
+	void AddCurrentHealth(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	float GetCurrentHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetMaxHealth(float NewAmount);
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateHealthBar();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
@@ -85,17 +113,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FSpellData> Spells;
 
+	UFUNCTION()
+	void LearnSpell(FString SpellName);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void CastSpell(int32 SpellIndex);
 
 	UFUNCTION(BlueprintCallable)
-	void ShootSpell(FSpellData SpellData);
+	void ShootSpell(FString SpellName, FSpellData SpellData);
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpell> SpellClass;
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void EnteringCombat(AActor *Enemy);
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	UFUNCTION(BlueprintNativeEvent)
+	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

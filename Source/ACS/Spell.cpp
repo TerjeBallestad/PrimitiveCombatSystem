@@ -3,9 +3,7 @@
 
 #include "Spell.h"
 
-#include "ACSDamage.h"
 #include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystem.h"
 
 
 // TODO Rename to projectile spell
@@ -37,7 +35,7 @@ void ASpell::BeginPlay()
 
 void ASpell::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if(OtherActor != SpellInstigator)
+	if(OtherActor != SpellInstigator && OtherActor->GetClass() != this->GetClass())
 	{
 
 	/* 

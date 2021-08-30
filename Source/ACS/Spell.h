@@ -54,6 +54,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FString SpellName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USphereComponent * Collider;
 
 	UPROPERTY()
@@ -73,6 +76,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void SetSpellName(const FString Name){	SpellName = Name;	};
+
+	UFUNCTION()
+	FString GetSpellName() const {	return SpellName;	};
 	
 	UPROPERTY()
 	UBillboardComponent *BillboardComponent;
