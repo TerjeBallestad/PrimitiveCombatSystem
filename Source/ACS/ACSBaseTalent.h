@@ -12,6 +12,37 @@
 /**
  * 
  */
+UENUM(BlueprintType)
+enum class ECharacterStat : uint8
+{
+	Endurance	UMETA(DisplayName = "Light, +health"),
+	Intellect	UMETA(DisplayName = "Blue, +critical chance"),
+	Power		UMETA(DisplayName = "Dark, +damage"),
+	Wit			UMETA(DisplayName = "Red, +cast speed"),
+	Haste		UMETA(DisplayName = "Red, +projectile speed"),
+	Wisdom		UMETA(DisplayName = "Green, -spell cost"),
+	Harmony		UMETA(DisplayName = "Green, +armor"),
+	Accuracy	UMETA(DisplayName = "Green/Blue, +hit chance"),
+	Creativity	UMETA(DisplayName = "Red/Blue, +energy generation"),
+};
+
+USTRUCT(BlueprintType)
+struct FTalentSlotData : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EBaseType North;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EBaseType East;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EBaseType South;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EBaseType West;
+};
 
 USTRUCT(BlueprintType)
 struct FTalentData : public FTableRowBase
@@ -22,8 +53,8 @@ struct FTalentData : public FTableRowBase
 	UTexture2D *Image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Rank;
-	
+	TMap<ECharacterStat, float> Stats;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EBaseType North;
 

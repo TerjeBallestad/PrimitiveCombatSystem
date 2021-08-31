@@ -47,6 +47,9 @@ protected:
 	AACSGameModeBase * GameMode;
 
 	//Stats
+	UPROPERTY(EditAnywhere)
+	TMap<ECharacterStat, float> Stats;
+	
 	UPROPERTY(VisibleAnywhere)
 	float MaxHealth;
 

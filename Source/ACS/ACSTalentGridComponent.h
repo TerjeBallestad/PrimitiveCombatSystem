@@ -14,6 +14,15 @@ struct FTalentGridCell
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Rank = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Visible = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Trauma = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SlotName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
