@@ -71,8 +71,23 @@ float AACSCharacter::GetMaxHealth() const
 	return MaxHealth;
 }
 
-void AACSCharacter::CastSpell_Implementation(FName SpellName)
+void AACSCharacter::CastSpell(FName SpellName)
 {
+	if (IsCasting) return;
+
+	auto SpellData = GetSpellData(SpellName);
+
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindLambda([=]
+	{
+		ShootSpell(SpellName);
+		SpellCastEnd();
+		IsCasting = false;
+	});
+
+	GetWorld()->GetTimerManager().SetTimer(CastTimeHandle, TimerCallback, SpellData.CastTime, false);
+	SpellCastStart();
+	IsCasting = true;
 }
 
 void AACSCharacter::LearnSpell(FName SpellName)

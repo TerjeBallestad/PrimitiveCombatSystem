@@ -56,7 +56,11 @@ protected:
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;	
+	float CurrentHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FTimerHandle CastTimeHandle;
+
 
 public:	
 	// Called every frame
@@ -80,6 +84,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateHealthBar();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpellCastStart();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpellCastEnd();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
 
@@ -95,13 +105,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsCasting;
 
+	void CastSpell();
 	UFUNCTION()
 	void LearnSpell(FName SpellName);
 
 	UFUNCTION(BlueprintCallable)
 	FSpellData GetSpellData(const FName SpellName) const;
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable)
 	void CastSpell(FName SpellName);
 
 	UFUNCTION(BlueprintCallable)
