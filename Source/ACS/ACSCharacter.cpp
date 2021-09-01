@@ -71,23 +71,31 @@ float AACSCharacter::GetMaxHealth() const
 	return MaxHealth;
 }
 
-void AACSCharacter::CastSpell_Implementation(int32 SpellIndex)
+void AACSCharacter::CastSpell_Implementation(FName SpellName)
 {
-	
 }
 
-void AACSCharacter::LearnSpell(FString SpellName)
+void AACSCharacter::LearnSpell(FName SpellName)
 {
-	Spells.Add(* GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), ""));
 	if(!CharacterData.Spells.Contains(SpellName))
 	{
 		CharacterData.Spells.Add(SpellName);	
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName);
+	UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName.ToString());
 }
 
-void AACSCharacter::ShootSpell(const FString SpellName, const FSpellData SpellData)
+
+FSpellData AACSCharacter::GetSpellData(const FName SpellName) const
 {
+	auto const SpellData = * GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), "");
+	return SpellData;
+}
+
+
+
+void AACSCharacter::ShootSpell(const FName SpellName)
+{
+	const auto SpellData = GetSpellData(SpellName);
 	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
 	NewSpell->SetSpellName(SpellName);
 	NewSpell->Setup(this, SpellData);
@@ -107,7 +115,7 @@ float AACSCharacter::TakeDamage_Implementation(float DamageAmount, FDamageEvent 
 	if(IsValid(Spell) && !CharacterData.Spells.Contains(Spell->GetSpellName()))
 	{
 		LearnSpell(Spell->GetSpellName());
-		UE_LOG(LogTemp, Warning, TEXT("New spell: %s"), *Spell->GetSpellName());
+		UE_LOG(LogTemp, Warning, TEXT("New spell: %s"), *Spell->GetSpellName().ToString());
 	}
 	DamageCauser->Destroy();
 

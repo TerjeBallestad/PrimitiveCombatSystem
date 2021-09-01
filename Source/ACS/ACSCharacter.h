@@ -19,7 +19,7 @@ struct FCharacterData: public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FString> Spells;
+	TArray<FName> Spells;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FBTVector BaseType;
@@ -96,13 +96,16 @@ public:
 	bool IsCasting;
 
 	UFUNCTION()
-	void LearnSpell(FString SpellName);
-
-	UFUNCTION(BlueprintNativeEvent)
-	void CastSpell(int32 SpellIndex);
+	void LearnSpell(FName SpellName);
 
 	UFUNCTION(BlueprintCallable)
-	void ShootSpell(FString SpellName, FSpellData SpellData);
+	FSpellData GetSpellData(const FName SpellName) const;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void CastSpell(FName SpellName);
+
+	UFUNCTION(BlueprintCallable)
+	void ShootSpell(const FName SpellName);
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpell> SpellClass;

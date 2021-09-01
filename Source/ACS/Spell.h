@@ -54,7 +54,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	FString SpellName;
+	FName SpellName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USphereComponent * Collider;
@@ -78,10 +78,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void SetSpellName(const FString Name){	SpellName = Name;	};
+	void SetSpellName(const FName Name){	SpellName = Name;	};
 
 	UFUNCTION()
-	FString GetSpellName() const {	return SpellName;	};
+	FName GetSpellName() const {	return SpellName;	};
 	
 	UPROPERTY()
 	UBillboardComponent *BillboardComponent;

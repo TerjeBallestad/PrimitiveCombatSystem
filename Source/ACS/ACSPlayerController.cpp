@@ -31,10 +31,15 @@ void AACSPlayerController::SetupInputComponent()
 void AACSPlayerController::CastSpell(int32 Index)
 {
 	auto pawn = Cast<AACSCharacter>(GetPawn());
-	if(pawn)
+	
+	UE_LOG(LogTemp,Warning, TEXT("Spell input index %d"), Index);
+
+	
+	if(pawn && pawn->CharacterData.Spells.Num() > Index)
 	{
-		UE_LOG(LogTemp,Warning, TEXT("Spell input index %d"), Index);
-		pawn->CastSpell(Index);
+		auto SpellName = pawn->CharacterData.Spells[Index];
+		UE_LOG(LogTemp,Warning, TEXT("Spell input name %s"), *SpellName.ToString());
+		pawn->CastSpell(SpellName);
 	}
 }
 
