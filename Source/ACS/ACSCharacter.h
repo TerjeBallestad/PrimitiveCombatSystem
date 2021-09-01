@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 
+#include <Actor.h>
+
 #include "ACSGameModeBase.h"
 #include "ACSTalentGridComponent.h"
 #include "BTVector.h"
@@ -54,36 +56,7 @@ protected:
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;
-	
-	UPROPERTY(VisibleAnywhere)
-	float Endurance; // Light, +health
-	
-	UPROPERTY(VisibleAnywhere)
-	float Intellect; // Blue, +critical chance
-
-	UPROPERTY(VisibleAnywhere)
-	float Power; // Dark, +damage
-
-	UPROPERTY(VisibleAnywhere)
-	float Wit; // Red, +cast speed
-
-	UPROPERTY(VisibleAnywhere)
-	float Haste; // Red, +projectile speed
-
-	UPROPERTY(VisibleAnywhere)
-	float Wisdom; // Green, -spell cost
-
-	UPROPERTY(VisibleAnywhere)
-	float Harmony; // Green, +armor
-
-	UPROPERTY(VisibleAnywhere)
-	float Accuracy; // Green/Blue, +hit chance
-
-	UPROPERTY(VisibleAnywhere)
-	float Creativity; // Red/Blue, +energy generation
-
-	
+	float CurrentHealth;	
 
 public:	
 	// Called every frame
@@ -116,6 +89,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FSpellData> Spells;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AACSCharacter *Target;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsCasting;
+
 	UFUNCTION()
 	void LearnSpell(FString SpellName);
 
@@ -129,7 +108,7 @@ public:
 	TSubclassOf<ASpell> SpellClass;
 
 	UFUNCTION(BlueprintNativeEvent)
-	void EnteringCombat(AActor *Enemy);
+	void EnteringCombat(AACSCharacter *Enemy);
 
 	UFUNCTION(BlueprintNativeEvent)
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;

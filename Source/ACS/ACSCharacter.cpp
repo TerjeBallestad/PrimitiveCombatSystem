@@ -93,9 +93,10 @@ void AACSCharacter::ShootSpell(const FString SpellName, const FSpellData SpellDa
 	NewSpell->Setup(this, SpellData);
 }
 
-void AACSCharacter::EnteringCombat_Implementation(AActor* Enemy)
+void AACSCharacter::EnteringCombat_Implementation(AACSCharacter* Enemy)
 {
 	InCombat = true;
+	Target = Enemy;
 }
 
 float AACSCharacter::TakeDamage_Implementation(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
