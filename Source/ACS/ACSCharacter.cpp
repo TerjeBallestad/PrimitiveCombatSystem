@@ -111,7 +111,7 @@ FSpellData AACSCharacter::GetSpellData(const FName SpellName) const
 void AACSCharacter::ShootSpell(const FName SpellName)
 {
 	const auto SpellData = GetSpellData(SpellName);
-	ASpell * NewSpell = GetWorld()->SpawnActor<ASpell>(SpellClass, GetActorLocation(), GetActorRotation());
+	AACSSpell * NewSpell = GetWorld()->SpawnActor<AACSSpell>(SpellClass, GetActorLocation(), GetActorRotation());
 	NewSpell->SetSpellName(SpellName);
 	NewSpell->Setup(this, SpellData);
 }
@@ -126,7 +126,7 @@ float AACSCharacter::TakeDamage_Implementation(float DamageAmount, FDamageEvent 
                                 AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	ASpell *Spell = Cast<ASpell>(DamageCauser);
+	AACSSpell *Spell = Cast<AACSSpell>(DamageCauser);
 	if(IsValid(Spell) && !CharacterData.Spells.Contains(Spell->GetSpellName()))
 	{
 		LearnSpell(Spell->GetSpellName());

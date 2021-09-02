@@ -9,7 +9,7 @@
 #include "ACSGameModeBase.h"
 #include "ACSTalentGridComponent.h"
 #include "BTVector.h"
-#include "Spell.h"
+#include "ACSSpell.h"
 #include "GameFramework/Character.h"
 #include "ACSCharacter.generated.h"
 
@@ -119,7 +119,7 @@ public:
 	void ShootSpell(const FName SpellName);
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASpell> SpellClass;
+	TSubclassOf<AACSSpell> SpellClass;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void EnteringCombat(AACSCharacter *Enemy);

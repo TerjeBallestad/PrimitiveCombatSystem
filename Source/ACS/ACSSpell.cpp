@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Spell.h"
+#include "ACSSpell.h"
 
 #include "Kismet/GameplayStatics.h"
 
 
 // TODO Rename to projectile spell
-ASpell::ASpell()
+AACSSpell::AACSSpell()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -17,7 +17,7 @@ ASpell::ASpell()
 	BillboardComponent->SetupAttachment(Collider);
 }
 
-void ASpell::Setup(AActor *instigator, FSpellData data)
+void AACSSpell::Setup(AActor *instigator, FSpellData data)
 {
 	SpellData = data;
 	BillboardComponent->SetSprite(data.Image);
@@ -28,12 +28,12 @@ void ASpell::Setup(AActor *instigator, FSpellData data)
 	Collider->SetGenerateOverlapEvents(true);
 }
 
-void ASpell::BeginPlay()
+void AACSSpell::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ASpell::NotifyActorBeginOverlap(AActor* OtherActor)
+void AACSSpell::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if(OtherActor != SpellInstigator && OtherActor->GetClass() != this->GetClass())
 	{
@@ -93,7 +93,7 @@ void ASpell::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
-void ASpell::Tick(float DeltaTime)
+void AACSSpell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AddActorLocalOffset(FVector::ForwardVector * Speed * DeltaTime);

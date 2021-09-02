@@ -7,7 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
-#include "Spell.generated.h"
+#include "ACSSpell.generated.h"
 
 USTRUCT()
 struct FSpellData : public FTableRowBase
@@ -38,13 +38,13 @@ struct FSpellData : public FTableRowBase
 };
 
 UCLASS()
-class ACS_API ASpell : public AActor
+class ACS_API AACSSpell : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASpell();
+	AACSSpell();
 
 	UFUNCTION()
 	void Setup(AActor* actor, FSpellData data);
@@ -66,7 +66,7 @@ protected:
 	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed = 1;
+	float Speed = 1000;
 
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem *ImpactParticles;
@@ -83,7 +83,7 @@ public:
 	UFUNCTION()
 	FName GetSpellName() const {	return SpellName;	};
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	UBillboardComponent *BillboardComponent;
 
 	UPROPERTY(VisibleAnywhere)
