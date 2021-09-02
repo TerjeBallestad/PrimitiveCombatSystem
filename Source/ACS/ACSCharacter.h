@@ -32,6 +32,9 @@ struct FCharacterData: public FTableRowBase
 
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
+
+	UPROPERTY(VisibleAnywhere)
+	FTalentGridCharacter TalentGrid;
 };
 
 UCLASS()
@@ -52,9 +55,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool InCombat = false;
-
-	UPROPERTY()
-	AACSGameModeBase * GameMode;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FTimerHandle CastTimeHandle;

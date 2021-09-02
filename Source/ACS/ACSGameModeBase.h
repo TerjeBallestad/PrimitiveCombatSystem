@@ -16,13 +16,6 @@ class ACS_API AACSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable *SpellData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable *CharacterData;
 	
-protected:
-	virtual void BeginPlay() override;
 };

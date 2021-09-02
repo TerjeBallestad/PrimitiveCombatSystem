@@ -4,6 +4,7 @@
 #include "ACSCharacter.h"
 
 #include "ACSDamage.h"
+#include "ACSGameInstance.h"
 #include "ACSGameModeBase.h"
 #include "ACSSaveGame.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,7 +24,7 @@ void AACSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameMode = CastChecked<AACSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	auto GameInstance = CastChecked<UACSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	FCharacterData Data;
 	
@@ -33,7 +34,7 @@ void AACSCharacter::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Loading character %s from savegame"), *Name.ToString());
 	} else
 	{
-		Data = *GameMode->CharacterData->FindRow<FCharacterData>(Name, "");
+		Data = *GameInstance->CharacterData->FindRow<FCharacterData>(Name, "");
 		UACSSaveGame::SaveCharacterData(Name, CharacterData);
 		UE_LOG(LogTemp, Warning, TEXT("Character %s does not exist, loading from datatable"), *Name.ToString());
 	}
@@ -68,6 +69,10 @@ void AACSCharacter::SetCurrentHealth(const float NewAmount)
 void AACSCharacter::AddCurrentHealth(const float Amount)
 {
 	CharacterData.CurrentHealth += Amount;
+	if(CharacterData.CurrentHealth < 0)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=CharacterA");
+	}
 	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
 	UpdateHealthBar();
 
@@ -124,7 +129,7 @@ void AACSCharacter::LearnSpell(FName SpellName)
 
 FSpellData AACSCharacter::GetSpellData(const FName SpellName) const
 {
-	auto const SpellData = * GameMode->SpellData->FindRow<FSpellData>(FName(SpellName), "");
+	auto const SpellData = * Cast<UACSGameInstance>(GetGameInstance())->SpellData->FindRow<FSpellData>(FName(SpellName), "");
 	return SpellData;
 }
 

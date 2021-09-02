@@ -32,3 +32,8 @@ void UACSTalentGridComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
+void UACSTalentGridComponent::LoadFromDataTable(FName name)
+{
+	
+}
+

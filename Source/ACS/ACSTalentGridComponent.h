@@ -23,10 +23,10 @@ struct FTalentGridCell
 	bool Trauma = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString SlotName;
+	FName SlotName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString TalentName;
+	FName TalentName;
 };
 
 USTRUCT(BlueprintType)
@@ -62,5 +62,5 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	void LoadFromDataTable(FName name);
 };
