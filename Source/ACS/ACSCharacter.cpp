@@ -5,6 +5,7 @@
 
 #include "ACSDamage.h"
 #include "ACSGameModeBase.h"
+#include "ACSSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -23,15 +24,29 @@ void AACSCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	GameMode = CastChecked<AACSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	FCharacterData Data;
 	
-	CharacterData = *GameMode->CharacterData->FindRow<FCharacterData>(FName(Name), "");
+	if (UACSSaveGame::CharacterDataExists(Name))
+	{
+		Data = UACSSaveGame::LoadCharacterData(Name);
+		UE_LOG(LogTemp, Warning, TEXT("Loading character %s from savegame"), *Name.ToString());
+	} else
+	{
+		Data = *GameMode->CharacterData->FindRow<FCharacterData>(Name, "");
+		UACSSaveGame::SaveCharacterData(Name, CharacterData);
+		UE_LOG(LogTemp, Warning, TEXT("Character %s does not exist, loading from datatable"), *Name.ToString());
+	}
+
+	CharacterData = Data;
+	
 	for (const auto SpellName : CharacterData.Spells)
 	{
 		LearnSpell(SpellName);
 	}
 
-	SetMaxHealth(200);
-	SetCurrentHealth(200);
+	SetMaxHealth(CharacterData.MaxHealth);
+	SetCurrentHealth(CharacterData.CurrentHealth);
 }
 
 // Called every frame
@@ -43,32 +58,38 @@ void AACSCharacter::Tick(float DeltaTime)
 
 void AACSCharacter::SetCurrentHealth(const float NewAmount)
 {
-	CurrentHealth = NewAmount;
-	CurrentHealth = FMath::Clamp<float>(CurrentHealth, 0.0, MaxHealth);
+	CharacterData.CurrentHealth = NewAmount;
+	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
 	UpdateHealthBar();
+
+	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 }
 
 void AACSCharacter::AddCurrentHealth(const float Amount)
 {
-	CurrentHealth += Amount;
-	CurrentHealth = FMath::Clamp<float>(CurrentHealth, 0.0, MaxHealth);
+	CharacterData.CurrentHealth += Amount;
+	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
 	UpdateHealthBar();
+
+	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 }
 
 float AACSCharacter::GetCurrentHealth() const
 {
-	return CurrentHealth;
+	return CharacterData.CurrentHealth;
 }
 
 void AACSCharacter::SetMaxHealth(const float NewAmount)
 {
-	MaxHealth = NewAmount;
+	CharacterData.MaxHealth = NewAmount;
 	UpdateHealthBar();
+
+	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 }
 
 float AACSCharacter::GetMaxHealth() const
 {
-	return MaxHealth;
+	return CharacterData.MaxHealth;
 }
 
 void AACSCharacter::CastSpell(FName SpellName)
@@ -97,6 +118,7 @@ void AACSCharacter::LearnSpell(FName SpellName)
 		CharacterData.Spells.Add(SpellName);	
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName.ToString());
+	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 }
 
 

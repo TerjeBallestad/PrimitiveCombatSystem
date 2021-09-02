@@ -24,6 +24,14 @@ struct FCharacterData: public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FBTVector BaseType;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<ECharacterStat, float> Stats;
+
+	UPROPERTY(VisibleAnywhere)
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere)
+	float CurrentHealth;
 };
 
 UCLASS()
@@ -47,16 +55,6 @@ protected:
 
 	UPROPERTY()
 	AACSGameModeBase * GameMode;
-
-	//Stats
-	UPROPERTY(EditAnywhere)
-	TMap<ECharacterStat, float> Stats;
-	
-	UPROPERTY(VisibleAnywhere)
-	float MaxHealth;
-
-	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FTimerHandle CastTimeHandle;
@@ -91,13 +89,10 @@ public:
 	void SpellCastEnd();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
+	FName Name;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FCharacterData CharacterData;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<FSpellData> Spells;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AACSCharacter *Target;
@@ -105,7 +100,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsCasting;
 
-	void CastSpell();
 	UFUNCTION()
 	void LearnSpell(FName SpellName);
 

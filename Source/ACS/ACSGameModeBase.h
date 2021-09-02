@@ -23,5 +23,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable *CharacterData;
 	
-	
+protected:
+	virtual void BeginPlay() override;
 };
