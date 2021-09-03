@@ -22,6 +22,22 @@ void AACSBrainGameMode::InitGame(const FString& MapName, const FString& Options,
 	}
 }
 
+void AACSBrainGameMode::SetupSpotlight(AACSCharacter* Character)
+{
+	auto Spotlight = NewObject<USpotLightComponent>(Character, "Spotlight");
+	Spotlight->SetupAttachment(Character->GetRootComponent());
+	Spotlight->RegisterComponent();
+	Character->AddInstanceComponent(Spotlight);
+	Spotlight->SetRelativeLocation(FVector(0,0,400));
+	Spotlight->SetLightColor(FColor(255, 245, 185));
+	Spotlight->SetRelativeRotation(FRotator(-90, 0, 0));
+	Spotlight->IntensityUnits = ELightUnits::Unitless;
+	Spotlight->bUseInverseSquaredFalloff = false;
+	Spotlight->LightFalloffExponent = 0.0001;
+	Spotlight->Intensity = 9;
+	Spotlight->ReloadConfig();
+}
+
 void AACSBrainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -29,9 +45,7 @@ void AACSBrainGameMode::BeginPlay()
 	
 	auto Character = GetWorld()->SpawnActor<AACSCharacter>(NPCClass, GridOrigin + FVector(100, 0, 200), FRotator());
 	
-	auto Spotlight = NewObject<USpotLightComponent>(Character, "Spotlight");
-	Spotlight->SetupAttachment(Character->GetRootComponent());
-	Spotlight->RegisterComponent();
+	SetupSpotlight(Character);
 	 
 
 
@@ -39,7 +53,10 @@ void AACSBrainGameMode::BeginPlay()
 	{
 		Character->Setup(FName(CharacterToLoad));
 	}
-	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(GridOrigin + FVector(-100, 0, 200));
+
+	auto PlayerCharacter = Cast<AACSCharacter>( GetWorld()->GetFirstPlayerController()->GetPawn());
+	PlayerCharacter->SetActorLocation(GridOrigin + FVector(-100, 0, 200));
+	SetupSpotlight(PlayerCharacter);
 
 	
 }
