@@ -7,6 +7,7 @@
 #include "ACSGameInstance.h"
 #include "ACSGameModeBase.h"
 #include "ACSSaveGame.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -14,6 +15,10 @@ AACSCharacter::AACSCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Configure character movement
+	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->AirControl = 0.2f;
 
 	TalentGridComponent = CreateDefaultSubobject<UACSTalentGridComponent>("TalentGrid");
 
@@ -55,7 +60,6 @@ void AACSCharacter::Setup(FName CharacterName)
 	SetMaxHealth(CharacterData.MaxHealth);
 	SetCurrentHealth(CharacterData.CurrentHealth);
 }
-
 
 // Called every frame
 void AACSCharacter::Tick(float DeltaTime)

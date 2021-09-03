@@ -12,20 +12,79 @@ void AACSPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetShowMouseCursor(true);
 }
 
 void AACSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	check(InputComponent);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AACSPlayerController::Jump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AACSPlayerController::StopJumping);
+
+	InputComponent->BindAxis("MoveForward", this, &AACSPlayerController::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &AACSPlayerController::MoveRight);
+
+	InputComponent->BindAxis("Turn", this, &AACSPlayerController::AddControllerYawInput);
+	InputComponent->BindAxis("LookUp", this, &AACSPlayerController::AddControllerPitchInput);
 	
+	InputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &AACSPlayerController::MouseLeftClicked);
+
 	InputComponent->BindAction<FActionBarInput>("Action1", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 0);
 	InputComponent->BindAction<FActionBarInput>("Action2", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 1);
 	InputComponent->BindAction<FActionBarInput>("Action3", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 2);
 	InputComponent->BindAction<FActionBarInput>("Action4", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 3);
 	InputComponent->BindAction<FActionBarInput>("Action5", EInputEvent::IE_Pressed, this, &AACSPlayerController::CastSpell, 4);
-	InputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &AACSPlayerController::MouseLeftClicked);
 	
+}
+
+void AACSPlayerController::MoveForward(float Value)
+{
+	if (Value != 0.0f)
+	{
+		// find out which way is forward
+		const FRotator Rotation = GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		GetCharacter()->AddMovementInput(Direction, Value);
+	}
+}
+
+void AACSPlayerController::MoveRight(float Value)
+{
+	if (Value != 0.0f)
+	{
+		// find out which way is right
+		const FRotator Rotation = GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+	
+		// get right vector 
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		// add movement in that direction
+		GetCharacter()->AddMovementInput(Direction, Value);
+	}
+}
+
+void AACSPlayerController::Jump()
+{
+	GetCharacter()->Jump();
+}
+
+void AACSPlayerController::StopJumping()
+{
+	GetCharacter()->StopJumping();
+}
+
+void AACSPlayerController::AddControllerYawInput(const float Value)
+{
+	GetPawn()->AddControllerYawInput(Value);
+}
+
+void AACSPlayerController::AddControllerPitchInput(const float Value)
+{
+	GetPawn()->AddControllerPitchInput(Value);
 }
 
 void AACSPlayerController::CastSpell(int32 Index)

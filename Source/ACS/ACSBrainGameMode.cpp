@@ -64,6 +64,7 @@ void AACSBrainGameMode::BeginPlay()
 void AACSBrainGameMode::LoadTalentGrid(FName name)
 {
 	auto GameInstance = Cast<UACSGameInstance>(GetGameInstance());
+	check(GameInstance);
 
 	auto Grid = GameInstance->CharacterGrids->FindRow<FTalentGridCharacter>(name, "")->Grid;
 

@@ -18,7 +18,19 @@ class ACS_API AACSPlayerController : public APlayerController
 
 	void BeginPlay() override;
 
+protected:
+	void MoveForward(float Value);
+
+	void MoveRight(float Value);
+
+	void Jump();
+	void StopJumping();
+	void AddControllerYawInput(float Value);
+	void AddControllerPitchInput(float Value);
+	
+
 public:
+	
 	UFUNCTION()
 	virtual void SetupInputComponent() override;
 

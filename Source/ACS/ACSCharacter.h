@@ -67,7 +67,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Setup(FName CharacterName);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentHealth(float NewAmount);
 
