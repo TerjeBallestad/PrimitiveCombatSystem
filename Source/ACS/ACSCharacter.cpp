@@ -24,19 +24,25 @@ void AACSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!Name.IsNone())
+		Setup(Name);
+}
+
+void AACSCharacter::Setup(FName CharacterName)
+{
 	auto GameInstance = CastChecked<UACSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	FCharacterData Data;
 	
-	if (UACSSaveGame::CharacterDataExists(Name))
+	if (UACSSaveGame::CharacterDataExists(CharacterName))
 	{
-		Data = UACSSaveGame::LoadCharacterData(Name);
-		UE_LOG(LogTemp, Warning, TEXT("Loading character %s from savegame"), *Name.ToString());
+		Data = UACSSaveGame::LoadCharacterData(CharacterName);
+		UE_LOG(LogTemp, Warning, TEXT("Loading character %s from savegame"), *CharacterName.ToString());
 	} else
 	{
-		Data = *GameInstance->CharacterData->FindRow<FCharacterData>(Name, "");
-		UACSSaveGame::SaveCharacterData(Name, CharacterData);
-		UE_LOG(LogTemp, Warning, TEXT("Character %s does not exist, loading from datatable"), *Name.ToString());
+		Data = *GameInstance->CharacterData->FindRow<FCharacterData>(CharacterName, "");
+		UACSSaveGame::SaveCharacterData(CharacterName, CharacterData);
+		UE_LOG(LogTemp, Warning, TEXT("Character %s does not exist, loading from datatable"), *CharacterName.ToString());
 	}
 
 	CharacterData = Data;
@@ -49,6 +55,7 @@ void AACSCharacter::BeginPlay()
 	SetMaxHealth(CharacterData.MaxHealth);
 	SetCurrentHealth(CharacterData.CurrentHealth);
 }
+
 
 // Called every frame
 void AACSCharacter::Tick(float DeltaTime)
@@ -71,7 +78,7 @@ void AACSCharacter::AddCurrentHealth(const float Amount)
 	CharacterData.CurrentHealth += Amount;
 	if(CharacterData.CurrentHealth < 0)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=CharacterA");
+		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=" + Name.ToString());
 	}
 	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
 	UpdateHealthBar();
@@ -114,6 +121,12 @@ void AACSCharacter::CastSpell(FName SpellName)
 	GetWorld()->GetTimerManager().SetTimer(CastTimeHandle, TimerCallback, SpellData.CastTime, false);
 	SpellCastStart();
 	IsCasting = true;
+}
+
+void AACSCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (CastTimeHandle.IsValid())
+		GetWorld()->GetTimerManager().ClearTimer(CastTimeHandle);
 }
 
 void AACSCharacter::LearnSpell(FName SpellName)

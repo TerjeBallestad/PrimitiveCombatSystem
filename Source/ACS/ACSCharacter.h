@@ -27,11 +27,11 @@ struct FCharacterData: public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<ECharacterStat, float> Stats;
 
-	UPROPERTY(VisibleAnywhere)
-	float MaxHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float MaxHealth = 200;
 
-	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float CurrentHealth = 200;
 
 	UPROPERTY(VisibleAnywhere)
 	FTalentGridCharacter TalentGrid;
@@ -49,6 +49,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;;
+	
 
 	UPROPERTY(VisibleAnywhere)
 	UACSTalentGridComponent *TalentGridComponent;
@@ -63,6 +65,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void Setup(FName CharacterName);
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentHealth(float NewAmount);
