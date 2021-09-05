@@ -37,6 +37,8 @@ void AACSCharacter::Setup(FName CharacterName)
 {
 	auto GameInstance = CastChecked<UACSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
+	Name = CharacterName;
+
 	FCharacterData Data;
 	
 	if (UACSSaveGame::CharacterDataExists(CharacterName))
@@ -46,7 +48,8 @@ void AACSCharacter::Setup(FName CharacterName)
 	} else
 	{
 		Data = *GameInstance->CharacterData->FindRow<FCharacterData>(CharacterName, "");
-		UACSSaveGame::SaveCharacterData(CharacterName, CharacterData);
+		Data.TalentGrid = *GameInstance->CharacterGrids->FindRow<FTalentGridCharacter>(CharacterName, "");
+		UACSSaveGame::SaveCharacterData(CharacterName, Data);
 		UE_LOG(LogTemp, Warning, TEXT("Character %s does not exist, loading from datatable"), *CharacterName.ToString());
 	}
 
@@ -72,9 +75,8 @@ void AACSCharacter::SetCurrentHealth(const float NewAmount)
 {
 	CharacterData.CurrentHealth = NewAmount;
 	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
-	UpdateHealthBar();
-
 	UACSSaveGame::SaveCharacterData(Name, CharacterData);
+	UpdateHealthBar();
 }
 
 void AACSCharacter::AddCurrentHealth(const float Amount)
@@ -85,9 +87,8 @@ void AACSCharacter::AddCurrentHealth(const float Amount)
 		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=" + Name.ToString());
 	}
 	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
-	UpdateHealthBar();
-
 	UACSSaveGame::SaveCharacterData(Name, CharacterData);
+	UpdateHealthBar();
 }
 
 float AACSCharacter::GetCurrentHealth() const
@@ -98,9 +99,8 @@ float AACSCharacter::GetCurrentHealth() const
 void AACSCharacter::SetMaxHealth(const float NewAmount)
 {
 	CharacterData.MaxHealth = NewAmount;
-	UpdateHealthBar();
-
 	UACSSaveGame::SaveCharacterData(Name, CharacterData);
+	UpdateHealthBar();
 }
 
 float AACSCharacter::GetMaxHealth() const
@@ -138,9 +138,9 @@ void AACSCharacter::LearnSpell(FName SpellName)
 	if(!CharacterData.Spells.Contains(SpellName))
 	{
 		CharacterData.Spells.Add(SpellName);	
+		UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName.ToString());
+		UACSSaveGame::SaveCharacterData(Name, CharacterData);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Learned new spell: %s"), *SpellName.ToString());
-	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 }
 
 

@@ -4,6 +4,7 @@
 #include "ACSBrainGameMode.h"
 
 #include "ACSGameInstance.h"
+#include "ACSSaveGame.h"
 #include "ACSTalentGridComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -12,11 +13,11 @@ void AACSBrainGameMode::InitGame(const FString& MapName, const FString& Options,
 {
 	Super::InitGame(MapName, Options,ErrorMessage);
 
-	CharacterToLoad = UGameplayStatics::ParseOption(Options, "CharacterName");
+	CharacterToLoad = FName( UGameplayStatics::ParseOption(Options, "CharacterName"));
 
-	UE_LOG(LogTemp, Warning, TEXT("Loading Character: %s"), *CharacterToLoad)
+	UE_LOG(LogTemp, Warning, TEXT("Loading Character: %s"), *CharacterToLoad.ToString())
 
-	if(CharacterToLoad.IsEmpty())
+	if(CharacterToLoad.IsNone())
 	{
 		CharacterToLoad = "Player";
 	}
@@ -41,24 +42,19 @@ void AACSBrainGameMode::SetupSpotlight(AACSCharacter* Character)
 void AACSBrainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	LoadTalentGrid(FName (CharacterToLoad));
+	LoadTalentGrid(CharacterToLoad);
 	
 	auto Character = GetWorld()->SpawnActor<AACSCharacter>(NPCClass, GridOrigin + FVector(100, 0, 200), FRotator());
-	
-	SetupSpotlight(Character);
 	 
-
-
 	if(IsValid(Character))
 	{
-		Character->Setup(FName(CharacterToLoad));
+		Character->Setup(CharacterToLoad);
+		SetupSpotlight(Character);	
 	}
 
 	auto PlayerCharacter = Cast<AACSCharacter>( GetWorld()->GetFirstPlayerController()->GetPawn());
 	PlayerCharacter->SetActorLocation(GridOrigin + FVector(-100, 0, 200));
 	SetupSpotlight(PlayerCharacter);
-
-	
 }
 
 void AACSBrainGameMode::LoadTalentGrid(FName name)
@@ -66,8 +62,10 @@ void AACSBrainGameMode::LoadTalentGrid(FName name)
 	auto GameInstance = Cast<UACSGameInstance>(GetGameInstance());
 	check(GameInstance);
 
-	auto Grid = GameInstance->CharacterGrids->FindRow<FTalentGridCharacter>(name, "")->Grid;
+	//auto Grid = GameInstance->CharacterGrids->FindRow<FTalentGridCharacter>(name, "")->Grid;
+	auto Grid = LoadCurrentCharacterData().TalentGrid.Grid;
 
+	
 	auto CellSize = 501;
 	int CollumnCount = 0;
 	int RowCount = 0;
@@ -84,4 +82,16 @@ void AACSBrainGameMode::LoadTalentGrid(FName name)
 	}
 
 	GridOrigin = FVector(CollumnCount * CellSize / 2, RowCount * CellSize / 2, 0);
+}
+
+FCharacterData AACSBrainGameMode::LoadCurrentCharacterData()
+{
+	return UACSSaveGame::LoadCharacterData(CharacterToLoad);
+}
+
+void AACSBrainGameMode::SaveTalentGrid(TMap<FIntPoint, FTalentGridCell> GridData)
+{
+	auto CharacterData = LoadCurrentCharacterData();
+	CharacterData.TalentGrid.Grid = GridData;
+	UACSSaveGame::SaveCharacterData(CharacterToLoad, CharacterData);
 }

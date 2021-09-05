@@ -25,6 +25,12 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Setup(FTalentGridCell CellData, FTalentData TalentData, FIntPoint Coordinate, FTalentSlotData SlotData);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveData(TMap<FIntPoint, FTalentGridCell> GridData);
+
+	UFUNCTION(BlueprintCallable)
+	TMap<FIntPoint, FTalentGridCell> GetData();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

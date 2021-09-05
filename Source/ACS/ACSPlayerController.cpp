@@ -112,7 +112,6 @@ void AACSPlayerController::MouseLeftClicked()
 	{
 		const FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), SelectCharacter->GetActorLocation());
 				
-		GetCharacter()->bUseControllerRotationYaw = false;
 		GetCharacter()->SetActorRotation(NewRotation);
 	}	
 }

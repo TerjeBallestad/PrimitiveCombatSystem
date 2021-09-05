@@ -43,4 +43,13 @@ bool UACSSaveGame::CharacterDataExists(FName name)
 	return SaveGame->Characters.Contains(name);
 }
 
+void UACSSaveGame::SaveCharacterTalentGridCell(FName Name, FIntPoint Coordinate, FTalentGridCell CellData)
+{
+	auto GameSave = GetCharacterDatabase();
+	auto CharacterData=  GameSave->Characters;
+	CharacterData[Name].TalentGrid.Grid[Coordinate] = CellData;
+
+	SaveCharacterDatabase(GameSave);
+}
+
 

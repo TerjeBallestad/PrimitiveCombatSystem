@@ -7,7 +7,6 @@
 #include "ACSCharacter.h"
 #include "ACSTalentGridCell.h"
 #include "Components/SpotLightComponent.h"
-#include "Engine/SpotLight.h"
 #include "GameFramework/GameModeBase.h"
 #include "ACSBrainGameMode.generated.h"
 
@@ -26,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadTalentGrid(FName name);
 
+	UFUNCTION(BlueprintCallable)
+	FCharacterData LoadCurrentCharacterData();
+	
+	UFUNCTION(BlueprintCallable)
+	void SaveTalentGrid(TMap<FIntPoint, FTalentGridCell> GridData);
+
 	virtual  void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	void SetupSpotlight(AACSCharacter* Character);
 
@@ -34,7 +39,7 @@ public:
 
 private:
 	UPROPERTY()
-	FString CharacterToLoad;
+	FName CharacterToLoad;
 
 	UPROPERTY()
 	FVector GridOrigin;

@@ -3,6 +3,10 @@
 
 #include "ACSTalentGridCell.h"
 
+#include "ACSBrainGameMode.h"
+#include "ACSSaveGame.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AACSTalentGridCell::AACSTalentGridCell()
 {
@@ -22,6 +26,20 @@ void AACSTalentGridCell::Setup_Implementation(FTalentGridCell CellData, FTalentD
 	FIntPoint Coordinate, FTalentSlotData SlotData)
 {
 	
+}
+
+void AACSTalentGridCell::SaveData(TMap<FIntPoint, FTalentGridCell> GridData )
+{
+	auto GameMode = Cast<AACSBrainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	check(GameMode);
+	GameMode->SaveTalentGrid(GridData);
+}
+
+TMap<FIntPoint, FTalentGridCell> AACSTalentGridCell::GetData()
+{
+	auto GameMode = Cast<AACSBrainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	check(GameMode);
+	return GameMode->LoadCurrentCharacterData().TalentGrid.Grid;
 }
 
 // Called every frame
