@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 
-#include <Actor.h>
-
-#include "ACSGameModeBase.h"
 #include "ACSTalentGridComponent.h"
 #include "BTVector.h"
 #include "ACSSpell.h"
@@ -61,16 +58,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FTimerHandle CastTimeHandle;
 
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintNativeEvent)
 	void Setup(FName CharacterName);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentHealth(float NewAmount);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void AddCurrentHealth(float Amount);
 
@@ -124,4 +121,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();
 };

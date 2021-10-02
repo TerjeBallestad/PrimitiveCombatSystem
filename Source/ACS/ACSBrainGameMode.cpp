@@ -6,6 +6,7 @@
 #include "ACSGameInstance.h"
 #include "ACSSaveGame.h"
 #include "ACSTalentGridComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -13,13 +14,12 @@ void AACSBrainGameMode::InitGame(const FString& MapName, const FString& Options,
 {
 	Super::InitGame(MapName, Options,ErrorMessage);
 
-	CharacterToLoad = FName( UGameplayStatics::ParseOption(Options, "CharacterName"));
+	BrainOwner = FName( UGameplayStatics::ParseOption(Options, "CharacterName"));
+	EnemyCharacterName = FName(UGameplayStatics::ParseOption(Options, "EnemyName"));
 
-	UE_LOG(LogTemp, Warning, TEXT("Loading Character: %s"), *CharacterToLoad.ToString())
-
-	if(CharacterToLoad.IsNone())
+	if(BrainOwner.IsNone())
 	{
-		CharacterToLoad = "Player";
+		BrainOwner = "Player";
 	}
 }
 
@@ -42,14 +42,23 @@ void AACSBrainGameMode::SetupSpotlight(AACSCharacter* Character)
 void AACSBrainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	LoadTalentGrid(CharacterToLoad);
-	
-	auto Character = GetWorld()->SpawnActor<AACSCharacter>(NPCClass, GridOrigin + FVector(100, 0, 200), FRotator());
-	 
-	if(IsValid(Character))
+	UE_LOG(LogTemp, Warning, TEXT("Inside brain of: %s"), *BrainOwner.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Enemy inside brain is: %s"), *EnemyCharacterName.ToString());
+	LoadTalentGrid(BrainOwner);
+
+	if(!EnemyCharacterName.IsNone())
 	{
-		Character->Setup(CharacterToLoad);
-		SetupSpotlight(Character);	
+		auto EnemyCharacter = GetWorld()->SpawnActor<AACSCharacter>(NPCClass, GridOrigin + FVector(100, 0, 200), FRotator());
+		SetupSpotlight(EnemyCharacter);	
+		
+		if(BrainOwner == "Player")
+		{		
+			EnemyCharacter->Setup(EnemyCharacterName);
+		}
+		else
+		{
+			EnemyCharacter->Setup(BrainOwner);
+		}
 	}
 
 	auto PlayerCharacter = Cast<AACSCharacter>( GetWorld()->GetFirstPlayerController()->GetPawn());
@@ -86,12 +95,14 @@ void AACSBrainGameMode::LoadTalentGrid(FName name)
 
 FCharacterData AACSBrainGameMode::LoadCurrentCharacterData()
 {
-	return UACSSaveGame::LoadCharacterData(CharacterToLoad);
+	return UACSSaveGame::LoadCharacterData(BrainOwner);
 }
 
 void AACSBrainGameMode::SaveTalentGrid(TMap<FIntPoint, FTalentGridCell> GridData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Saving grid for Character: %s"), *BrainOwner.ToString())
+
 	auto CharacterData = LoadCurrentCharacterData();
 	CharacterData.TalentGrid.Grid = GridData;
-	UACSSaveGame::SaveCharacterData(CharacterToLoad, CharacterData);
+	UACSSaveGame::SaveCharacterData(BrainOwner, CharacterData);
 }

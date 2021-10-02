@@ -6,7 +6,6 @@
 
 #include "ACSCharacter.h"
 #include "ACSTalentGridCell.h"
-#include "Components/SpotLightComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "ACSBrainGameMode.generated.h"
 
@@ -39,7 +38,10 @@ public:
 
 private:
 	UPROPERTY()
-	FName CharacterToLoad;
+	FName BrainOwner;
+
+	UPROPERTY()
+	FName EnemyCharacterName;
 
 	UPROPERTY()
 	FVector GridOrigin;

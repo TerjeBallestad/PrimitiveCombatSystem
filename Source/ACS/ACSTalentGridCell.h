@@ -21,10 +21,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(BlueprintReadWrite)
+	FTalentGridCell CellData;
+
+	UPROPERTY(BlueprintReadWrite)
+	FTalentData TalentData;
+
+	UPROPERTY(BlueprintReadWrite)
+	FIntPoint Coordinate;
+
+	UPROPERTY(BlueprintReadWrite)
+	FTalentSlotData SlotData;
+
 public:
 
 	UFUNCTION(BlueprintNativeEvent)
-	void Setup(FTalentGridCell CellData, FTalentData TalentData, FIntPoint Coordinate, FTalentSlotData SlotData);
+	void Setup(FTalentGridCell InCellData, FTalentData InTalentData, FIntPoint InCoordinate, FTalentSlotData InSlotData);
 
 	UFUNCTION(BlueprintCallable)
 	void SaveData(TMap<FIntPoint, FTalentGridCell> GridData);

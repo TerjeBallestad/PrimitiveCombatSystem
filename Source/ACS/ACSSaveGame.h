@@ -23,5 +23,4 @@ public:
 	static FCharacterData LoadCharacterData(FName name);
 	static void SaveCharacterData(FName name, FCharacterData);
 	static bool CharacterDataExists(FName name);
-	static void SaveCharacterTalentGridCell(FName Name, FIntPoint Coordinate, FTalentGridCell CellData);
 };

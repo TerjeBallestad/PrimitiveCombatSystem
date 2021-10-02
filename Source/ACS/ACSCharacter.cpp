@@ -3,9 +3,7 @@
 
 #include "ACSCharacter.h"
 
-#include "ACSDamage.h"
 #include "ACSGameInstance.h"
-#include "ACSGameModeBase.h"
 #include "ACSSaveGame.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,17 +26,16 @@ AACSCharacter::AACSCharacter()
 void AACSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (!Name.IsNone())
 		Setup(Name);
+	
+
 }
 
-void AACSCharacter::Setup(FName CharacterName)
+void AACSCharacter::Setup_Implementation(FName CharacterName)
 {
 	auto GameInstance = CastChecked<UACSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
 	Name = CharacterName;
-
 	FCharacterData Data;
 	
 	if (UACSSaveGame::CharacterDataExists(CharacterName))
@@ -79,13 +76,10 @@ void AACSCharacter::SetCurrentHealth(const float NewAmount)
 	UpdateHealthBar();
 }
 
+
 void AACSCharacter::AddCurrentHealth(const float Amount)
 {
 	CharacterData.CurrentHealth += Amount;
-	if(CharacterData.CurrentHealth < 0)
-	{
-		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=" + Name.ToString());
-	}
 	CharacterData.CurrentHealth = FMath::Clamp<float>(CharacterData.CurrentHealth, 0.0, CharacterData.MaxHealth);
 	UACSSaveGame::SaveCharacterData(Name, CharacterData);
 	UpdateHealthBar();
@@ -186,12 +180,23 @@ float AACSCharacter::TakeDamage_Implementation(float DamageAmount, FDamageEvent 
 	}	
 	
 	AddCurrentHealth(-DamageAmount * 10);
-	/*auto dmg = Cast<UACSDamage>(DamageEvent.DamageTypeClass->GetDefaultObject());
+	if(CharacterData.CurrentHealth <= 0)
+	{
+		Die();
+	}
 
-	if (!dmg) return 0.0f;
-
-	*/
 	return DamageAmount * 10;
+}
+
+void AACSCharacter::Die_Implementation()
+{
+	if( UGameplayStatics::GetCurrentLevelName(GetWorld()) != "InsideBrain")
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), "InsideBrain", true, "?CharacterName=" + Name.ToString() +"?EnemyName=" + Target->Name.ToString());
+	} else
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), "CombatArena");
+	}
 }
 
 

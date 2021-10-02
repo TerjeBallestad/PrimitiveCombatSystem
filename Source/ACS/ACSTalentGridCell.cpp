@@ -22,10 +22,13 @@ void AACSTalentGridCell::BeginPlay()
 	
 }
 
-void AACSTalentGridCell::Setup_Implementation(FTalentGridCell CellData, FTalentData TalentData,
-	FIntPoint Coordinate, FTalentSlotData SlotData)
+void AACSTalentGridCell::Setup_Implementation(FTalentGridCell InCellData, FTalentData InTalentData,
+	FIntPoint InCoordinate, FTalentSlotData InSlotData)
 {
-	
+	CellData = InCellData;
+	TalentData = InTalentData;
+	Coordinate = InCoordinate;
+	SlotData = InSlotData;
 }
 
 void AACSTalentGridCell::SaveData(TMap<FIntPoint, FTalentGridCell> GridData )
